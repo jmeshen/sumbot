@@ -2,8 +2,8 @@ module.exports = {
   "DATABASE_URI": "mongodb://localhost:27017/fsg-app",
   "SESSION_SECRET": "Optimus Prime is my real dad",
   "TWITTER": {
-    "consumerKey": "INSERT_TWITTER_CONSUMER_KEY_HERE",
-    "consumerSecret": "INSERT_TWITTER_CONSUMER_SECRET_HERE",
+    "consumerKey": "J0WBtqKXQyCyDSql4iAf2Ep88",
+    "consumerSecret": "3Jl5SwqsEwaqlzFiJ7asJyHvuTibKPC54EIti1ynpmmpNBp9O2",
     "callbackUrl": "INSERT_TWITTER_CALLBACK_HERE"
   },
   "FACEBOOK": {
