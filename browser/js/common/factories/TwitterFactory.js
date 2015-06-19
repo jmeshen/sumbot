@@ -1,13 +1,15 @@
 app.factory('TwitterFactory', function ($http) {
 	var tweet = {};
-		
-		tweet.getTweets = function() {
-			return $http.get('https://api.twitter.com/1.1/statuses/user_timeline')
-				.then(function(response){
-					console.log("we are working", response)
-				})
+
+  tweet.getTweets = function() {
+   return $http.get('/api/twitter/tweets')
+   .then(function(userTweets) {
+    console.log('what is userTweets.data.id? ', userTweets.data.id)
+    return userTweets.data;
+    })
+  }
 
 
-	}
 
+  return tweet;
 })
