@@ -58,3 +58,20 @@ var reply = function(user, link, index, length) {
   //     })
 }
 
+
+var getPage = require('summarizer').getPage;
+
+var uri = 'http://www.bbc.com/news/technology-33183508';
+
+getPage(uri).then(function (data) {
+  console.log("this works brooooo", data.summary)
+  /* check out the node-module summarizer and check out the docs and the example.js
+     thats where i got lines 62 to 72 from
+     not sure about the quality of the info but yeah...
+     i think we are going to have to tack on some hard
+     challenges to our project as we go along, just so we 
+     stay ambitious
+     console.log(JSON.stringify(data, null, 2)); */
+}, console.error);
+
+
