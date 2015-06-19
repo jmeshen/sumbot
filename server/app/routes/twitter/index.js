@@ -13,14 +13,23 @@ var client = new Twitter({
   access_token_secret: '9QK7u2iBx70ss9mpZymSKUQN8ZOtiezqdaGZ4eCzq88uD'
 });
 
-var params = {screen_name: 'DaDeetzPlz'};
-client.get('statuses/user_timeline', params, function(error, tweets, response){
-  if (!error) {
-    console.log("this works!", tweets[0].text);
-        console.log("this works!", tweets[1].text);
-    console.log("this works!", tweets[2].text);
-
-  }
+router.get('/tweets', function(req, res, next) {
+  // console.log('hitting tweet route');
+  // res.send("hellllloooo????")
+  var params = {screen_name: 'DaDeetzPlz'};
+  client.get('statuses/user_timeline', params, function(error, tweets, response){
+    if (!error) {
+      console.log("tweet object?", tweets[0]);
+      console.log("tweet id?", tweets[0].id);
+      client.get('statuses/oembed', { id:tweets[0].id_str}, function(error, tweet, response){
+        res.send(tweet);
+      })
+      console.log("this works!", tweets[0].text);
+      console.log("this works!", tweets[1].text);
+      console.log("this works!", tweets[2].text);
+      // res.send(tweets);
+    }
+  })
 });
 
 client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
@@ -34,8 +43,8 @@ client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
     //     }
     //   } else {
     // }
-        reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
-      
+    reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
+
   });
 
   stream.on('error', function(error) {
@@ -50,8 +59,8 @@ client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
 
 var reply = function(user, link, index, length) {
   client.post('statuses/update', { status: '@' + user + "this yo link: " + link}, function(err, data, response) {
-        console.log(data)
-      })
+    console.log(data)
+  })
   // post for multi links
   // client.post('statuses/update', { status: '@' + user +" " + index +"of" +length + "this yo link:" + link}, function(err, data, response) {
   //       console.log(data)
@@ -69,9 +78,9 @@ getPage(uri).then(function (data) {
      thats where i got lines 62 to 72 from
      not sure about the quality of the info but yeah...
      i think we are going to have to tack on some hard
-     challenges to our project as we go along, just so we 
+     challenges to our project as we go along, just so we
      stay ambitious
      console.log(JSON.stringify(data, null, 2)); */
-}, console.error);
+   }, console.error);
 
 
