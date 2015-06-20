@@ -81,13 +81,18 @@ process.nextTick(function() {
   var io = require('../../../io')();
   io.on('connection', function (socket) {
       console.log('inside io')
-      client.stream('user', function(stream) {
+      //this stream triggers when there are new statuses
+      client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
         console.log('We are listening E.T.:')
         stream.on('data', function(tweet) {
-          // reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
-
+            // console.log('this is the username', tweet.user.screen_name)
+            // console.log('this is the url', tweet.entities.urls[0].expanded_url)
+          reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
+          
+          // console.log("inside stream after user sends post", tweet)
           socket.emit('newTweets', tweet);
           //res.send(tweet)
+          // pristine = 0;
         });
 
         stream.on('error', function(error) {
@@ -118,11 +123,38 @@ process.nextTick(function() {
 
 
 var reply = function(user, link, index, length) {
-  client.post('statuses/update', { status: '@' + user + " this yo link: " + link}, function(err, data, response) {
-    // console.log("where is this going? ", data)
-    // response.send(data);
-  });
+  var data = require('fs').readFileSync('./server/app/routes/twitter/img/drawing.png');
+
+    // Make post request on media endpoint. Pass file data as media parameter
+    client.post('media/upload', {media: data}, function(error, media, response){
+      console.log('this is from the media/upload', media)
+      if (!error) {
+
+        // If successful, a media object will be returned.
+        console.log("this is the media object", media);
+
+        // Lets tweet it
+        var status = {
+          status: '@' + user + " this yo link: " + link,
+          media_ids: media.media_id_string // Pass the media id string
+        }
+
+        client.post('statuses/update', { status: '@' + user + " this yo link: " + link}, function(err, data, response) {
+          if(!err){
+          console.log("where is this going? ", data)
+          }  
+       });
+      }
+    });
+
+  // client.post('statuses/update', { status: '@' + user + " this yo link: " + link}, function(err, data, response) {
+  //   // console.log("where is this going? ", data)
+  //   // response.send(data);
+  // });
 };
+
+// 
+
 
 
 // var getPage = require('summarizer').getPage;
