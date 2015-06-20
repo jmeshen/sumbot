@@ -82,13 +82,15 @@ process.nextTick(function() {
   io.on('connection', function (socket) {
       console.log('inside io')
       //this stream triggers when there are new statuses
-      client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
+      client.stream('statuses/filter', {track: "DaDeetzPlz", with: "user"}, function(stream) {
         console.log('We are listening E.T.:')
         stream.on('data', function(tweet) {
             // console.log('this is the username', tweet.user.screen_name)
             // console.log('this is the url', tweet.entities.urls[0].expanded_url)
+          console.log('sending reply with', tweet)
+          if(tweet.user.screen_name !== "DaDeetzPlz"){
           reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
-          
+          }
           // console.log("inside stream after user sends post", tweet)
           socket.emit('newTweets', tweet);
           //res.send(tweet)
@@ -127,21 +129,20 @@ var reply = function(user, link, index, length) {
 
     // Make post request on media endpoint. Pass file data as media parameter
     client.post('media/upload', {media: data}, function(error, media, response){
-      console.log('this is from the media/upload', media)
+      // console.log('this is from the media/upload', media)
       if (!error) {
 
         // If successful, a media object will be returned.
-        console.log("this is the media object", media);
-
+        console.log("this is the media object", user);
         // Lets tweet it
         var status = {
           status: '@' + user + " this yo link: " + link,
           media_ids: media.media_id_string // Pass the media id string
         }
 
-        client.post('statuses/update', { status: '@' + user + " this yo link: " + link}, function(err, data, response) {
+        client.post('statuses/update', status, function(err, data, response) {
           if(!err){
-          console.log("where is this going? ", data)
+          // console.log("where is this going? ", data)
           }  
        });
       }
@@ -152,6 +153,8 @@ var reply = function(user, link, index, length) {
   //   // response.send(data);
   // });
 };
+
+
 
 // 
 
