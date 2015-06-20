@@ -48,6 +48,19 @@ process.nextTick(function() {
   });
 })
 
+// client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
+//   console.log('We are listening E.T.:')
+//   stream.on('data', function(tweet) {
+//     reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
+    
+
+//     res.send(tweet)
+//   });
+
+//   stream.on('error', function(error) {
+//     console.log(error);
+//   });
+// });
 
 // client.post('statuses/update', { status: '@jmeshen hello world!' }, function(err, data, response) {
 //   console.log(data)
