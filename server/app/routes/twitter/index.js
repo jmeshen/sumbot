@@ -5,7 +5,7 @@ var router = require('express').Router();
 var q = require('q');
 var fs = require('fs');
 var gm = require('gm');
-// var dir = __dirname + '/img';
+var getPage = require('summarizer').getPage;
 
 
 var client = new Twitter({
@@ -20,15 +20,15 @@ Promise.promisifyAll(client);
 module.exports = router;
 
 router.get('/tweets', function(req, res, next) {
-  // testing gm
-  // console.log('what is gm', gm)
-  var text = 'this will be dynamically generated';
-  gm(400, 300, "#ececec")
-  .gravity('Center')
-  .drawText(0, 0, text)
-  .write("./server/app/routes/twitter/img/test.png", function (err) {
-    if (!err) console.log('done');
-  });
+
+  // template creation
+  // gm(600, 400, "#ececec")
+  // .gravity('Center')
+  // // .drawText(0, 0, text)
+  // .write("./server/app/routes/twitter/img/template.png", function (err) {
+  //   if (!err) console.log('done');
+  // });
+
   // gm('./server/app/routes/twitter/img/test.png')
   // .drawText(text)
   // .write("./server/app/routes/twitter/img/dynTest.png", function (err) {
@@ -87,8 +87,9 @@ process.nextTick(function() {
         stream.on('data', function(tweet) {
             // console.log('this is the username', tweet.user.screen_name)
             // console.log('this is the url', tweet.entities.urls[0].expanded_url)
-          console.log('sending reply with', tweet)
+          // console.log('sending reply with', tweet)
           if(tweet.user.screen_name !== "DaDeetzPlz"){
+            console.log('//////about to fire off reply//////////');
           reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
           }
           // console.log("inside stream after user sends post", tweet)
@@ -105,45 +106,39 @@ process.nextTick(function() {
   });
 })
 
-// client.stream('statuses/filter', {track: "DaDeetzPlz"}, function(stream) {
-//   console.log('We are listening E.T.:')
-//   stream.on('data', function(tweet) {
-//     reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
-
-
-//     res.send(tweet)
-//   });
-
-//   stream.on('error', function(error) {
-//     console.log(error);
-//   });
-// });
-
-// client.post('statuses/update', { status: '@jmeshen hello world!' }, function(err, data, response) {
-//   console.log(data)
-// })
-
-
 var reply = function(user, link, index, length) {
-  var data = require('fs').readFileSync('./server/app/routes/twitter/img/drawing.png');
+  var text = '';
+  getPage(link).then(function (summary) {
+    console.log('////////////receiving summary///////////', summary);
+    text = summary;
+    gm('./server/app/routes/twitter/img/template.png')
+    .gravity('Center')
+    .drawText(0, 0, text.summary)
+    .write("./server/app/routes/twitter/img/summary.png", function (err) {
+      if (!err) console.log('done creating summary image');
+    });
+  }, console.log)
+  var data = require('fs').readFileSync('./server/app/routes/twitter/img/summary.png');
 
     // Make post request on media endpoint. Pass file data as media parameter
     client.post('media/upload', {media: data}, function(error, media, response){
       // console.log('this is from the media/upload', media)
+      console.log('/////////in client.post(media/upload)///////////////');
       if (!error) {
 
         // If successful, a media object will be returned.
         console.log("this is the media object", user);
         // Lets tweet it
         var status = {
-          status: '@' + user + " this yo link: " + link,
+          status: '@' + user + " Here's your summary for: " + link,
           media_ids: media.media_id_string // Pass the media id string
         }
 
         client.post('statuses/update', status, function(err, data, response) {
           if(!err){
           // console.log("where is this going? ", data)
-          }  
+          console.log('/////////in client.post(statuses/update)///////////////');
+          }
        });
       }
     });
@@ -156,11 +151,10 @@ var reply = function(user, link, index, length) {
 
 
 
-// 
+//
 
 
 
-// var getPage = require('summarizer').getPage;
 
 // var uri = 'http://www.bbc.com/news/technology-33183508';
 
