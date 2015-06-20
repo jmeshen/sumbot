@@ -3,13 +3,10 @@
 <!-- <div ng-bind-html="tweets.html"></div> -->
 
 <!-- sanitized HTML binding -->
-  <div ng-bind-html="tweets.html"></div>
-
+<!-- binding to Tweet source property -->
+<div ng-repeat="tweet in tweets">{{tweet.text}}</div>
   <!-- binding to Tweet source property -->
-  <div class="tweet-details">
-    Source: <span ng-bind-html="tweets.source"></span>
-
+ 
     <!-- play around with rendering different Tweet properties -->
     <!-- <p>{{tweet.user.screen_name}}</p> -->
     <!-- <p>{{tweet.text}}</p> -->
-  </div>
