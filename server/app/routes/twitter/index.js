@@ -3,7 +3,7 @@ var Twitter = require('twitter');
 var es = require('event-stream');
 var router = require('express').Router();
 var q = require('q');
-var fs = require('fs');
+var fs = Promise.promisifyAll(require('fs'));
 var gm = require('gm');
 var getPage = require('summarizer').getPage;
 
@@ -109,17 +109,23 @@ process.nextTick(function() {
 var reply = function(user, link, index, length) {
   var text = '';
   getPage(link).then(function (summary) {
-    console.log('////////////receiving summary///////////', summary);
+    console.log('////////////receiving summary///////////', summary.summary);
     text = summary;
     gm('./server/app/routes/twitter/img/template.png')
     .gravity('Center')
     .drawText(0, 0, text.summary)
     .write("./server/app/routes/twitter/img/summary.png", function (err) {
-      if (!err) console.log('done creating summary image');
+      if (!err) console.log('/////////////done creating summary image////////');
+      else console.log(err);
     });
-  }, console.log)
-  var data = require('fs').readFileSync('./server/app/routes/twitter/img/summary.png');
+  }, console.log).then(function() {
+    setTimeout(function(){
 
+    console.log('assigning new image to data');
+  fs.readFileAsync('./server/app/routes/twitter/img/summary.png').then(function(data) {
+
+    console.log('what is data from fs.readfile', data);
+    console.log('//////////////MADE IT TO media upload////////////');
     // Make post request on media endpoint. Pass file data as media parameter
     client.post('media/upload', {media: data}, function(error, media, response){
       // console.log('this is from the media/upload', media)
@@ -142,6 +148,11 @@ var reply = function(user, link, index, length) {
        });
       }
     });
+  })
+    }, 5000)
+
+  });
+
 
   // client.post('statuses/update', { status: '@' + user + " this yo link: " + link}, function(err, data, response) {
   //   // console.log("where is this going? ", data)
