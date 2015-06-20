@@ -14,6 +14,7 @@ app.controller('TwitterCtrl', function ($scope, TwitterFactory) {
    TwitterFactory.getTweets().then(function(results){
       console.log('results from oembed?? ', results)
       $scope.tweets = results;
+      console.log('do i have tweets?', $scope.tweets);
    });
    // $scope.getTweets = function() {
    //    TwitterFactory.getTweets().then(function(results){
