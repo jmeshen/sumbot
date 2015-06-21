@@ -149,7 +149,7 @@ var reply = function(user, link, index, length) {
       }
     });
   })
-    }, 5000)
+    }, 10000)
 
   });
 
