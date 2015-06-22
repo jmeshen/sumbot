@@ -4,9 +4,35 @@
 
 <!-- sanitized HTML binding -->
 <!-- binding to Tweet source property -->
-<div ng-repeat="tweet in tweets">{{tweet.text}}</div>
+<!-- <blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/jmeshen">@jmeshen</a> Here&#39;s your summary for: <a href="http://t.co/24tpSENWH9">http://t.co/24tpSENWH9</a> <a href="http://t.co/MftYVTOExZ">pic.twitter.com/MftYVTOExZ</a></p>&mdash; Tweet@Me Bot (@DaDeetzPlz) <a href="https://twitter.com/DaDeetzPlz/status/613035663647186944">June 22, 2015</a></blockquote>\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> -->
+
+<div layout="row" layout-wrap class="tweet-timeline">
+  <md-content flex-gt-lg="33" class="md-padding" ng-repeat="tweet in tweets">
+    <md-card>
+      <img ng-src="{{tweet.entities.media[0].media_url}}" class="md-card-image" alt="Summary">
+      <!-- <img src="http://pbs.twimg.com/media/CIHwr97UAAAqIFE.png"> -->
+      <md-card-content>
+        <h2 class="md-title"><a ng-href="https://twitter.com/{{tweet.in_reply_to_screen_name}}" target="_blank">@{{tweet.in_reply_to_screen_name}}</a> </h2>
+        <p>
+          Here's your summary for: <a ng-href="{{ tweet.entities.urls[0].expanded_url }}">{{ tweet.entities.urls[0].url }}</a>
+        </p>
+      </md-card-content>
+      <div class="md-actions" layout="row" layout-align="end center">
+        <md-button>Action 1</md-button>
+        <md-button>Action 2</md-button>
+      </div>
+    </md-card>
+    <br>
+  </md-content>
+</div>
+
+
+<!-- <div ng-repeat="tweet in tweets"><blockquote class="twitter-tweet">{{tweet.text}}</blockquote></div> -->
+
+
+
   <!-- binding to Tweet source property -->
- 
+
     <!-- play around with rendering different Tweet properties -->
     <!-- <p>{{tweet.user.screen_name}}</p> -->
     <!-- <p>{{tweet.text}}</p> -->

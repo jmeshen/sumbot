@@ -94,8 +94,10 @@ process.nextTick(function() {
               setTimeout(function() {reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url)}, 6000);
           }
           // console.log("inside stream after user sends post", tweet)
-          socket.emit('newTweets', tweet);
-          //res.send(tweet)
+          if(tweet.user.screen_name === "DaDeetzPlz") {
+            socket.emit('newTweets', tweet);
+          }
+          // socket.emit('newTweets', tweet);
           // pristine = 0;
         });
 
@@ -115,12 +117,12 @@ var reply = function(user, link, index, length) {
     getPage(link).then(function (summary) {
     console.log('////////////receiving summary///////////', summary.summary);
     var str = summary.summary.replace(/\r?\n|\r/g,'');
-    str = str.match(/(.|[\n]){1,57}/g).join('\n');
+    str = str.match(/(.|[\n]){1,72}/g).join('\n');
     text = str;
-    gm('./server/app/routes/twitter/img/template.png')
+    gm('./server/app/routes/twitter/img/tweet-template.png')
     .gravity('NorthWest')
     .fontSize(16)
-    .drawText(40, 100, text)
+    .drawText(40, 130, text)
     .write("./server/app/routes/twitter/img/summary.png", function (err) {
       if (!err) {
       console.log('/////////////done creating summary image////////');
@@ -158,6 +160,7 @@ var reply = function(user, link, index, length) {
       }
     });
   })
+
     }, 5000)
   }, console.log);
 };

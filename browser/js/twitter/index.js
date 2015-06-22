@@ -7,14 +7,15 @@ app.config(function ($stateProvider) {
 })
 
 app.controller('TwitterCtrl', function ($scope, TwitterFactory, Socket) {
-  
+
   //  $scope.tweets = client.get('user', function(tweets) {
   //   console.log('getting tweets from Twitter Factory');
   // })
-  
+
     TwitterFactory.getTweeter().then(function(results){
-      console.log('results from oembed?? ', results)
+      // console.log('results from oembed?? ', results)
       $scope.tweets = results;
+      console.log($scope.tweets)
       });
 
     Socket.on('newTweets', function(data) {
@@ -24,7 +25,7 @@ app.controller('TwitterCtrl', function ($scope, TwitterFactory, Socket) {
     })
 
 
-    
+
    // $scope.getTweets = function() {
    //    TwitterFactory.getTweets().then(function(results){
    //       $scope.tweets = results;
