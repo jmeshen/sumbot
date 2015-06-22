@@ -22,8 +22,8 @@ module.exports = router;
 router.get('/tweets', function(req, res, next) {
 
   // template creation
-  // gm(600, 400, "#ececec")
-  // .gravity('Center')
+  // gm(500, 400, "#ececec")
+  // .gravity('NorthWest')
   // // .drawText(0, 0, text)
   // .write("./server/app/routes/twitter/img/template.png", function (err) {
   //   if (!err) console.log('done');
@@ -110,14 +110,17 @@ process.nextTick(function() {
 var x = true;
 var reply = function(user, link, index, length) {
   var text = '';
-    x = false; 
+    x = false;
     console.log('first run')
     getPage(link).then(function (summary) {
     console.log('////////////receiving summary///////////', summary.summary);
-    text = summary;
+    var str = summary.summary.replace(/\r?\n|\r/g,'');
+    str = str.match(/(.|[\n]){1,57}/g).join('\n');
+    text = str;
     gm('./server/app/routes/twitter/img/template.png')
-    .gravity('Center')
-    .drawText(0, 0, text.summary)
+    .gravity('NorthWest')
+    .fontSize(16)
+    .drawText(40, 100, text)
     .write("./server/app/routes/twitter/img/summary.png", function (err) {
       if (!err) {
       console.log('/////////////done creating summary image////////');
@@ -168,7 +171,7 @@ var reply = function(user, link, index, length) {
   //   .drawText(0, 0, text.summary)
   //   .write("./server/app/routes/twitter/img/summary.png", function (err) {
   //     if (!err) {
-  //       x = false; 
+  //       x = false;
   //     console.log('/////////////done creating summary image////////');
   //   }
   //     else console.log(err);
@@ -226,12 +229,29 @@ var reply = function(user, link, index, length) {
 //
 
 
-
+// var format = function (summary) {
+//   // remove current line breaks
+//   var str = summary.match(/\r?\n|\r/g);
+//   console.log('str should be without line breaks', str);
+//   str = str.match(/(.|[\n]){1,90}/g);
+//   console.log('str should be WITH line breaks', str);
+//   // create line breaks for every substr of 100 characters
+//     // check if end point is a word, if so, create line break after the word
+//   return str;
+// }
 
 // var uri = 'http://www.bbc.com/news/technology-33183508';
 
 // getPage(uri).then(function (data) {
 //   console.log("this works brooooo", data.summary)
+//   var str = data.summary.replace(/\r?\n|\r/g,'');
+//   console.log('str should be without line breaks', str);
+//   str = str.match(/(.|[\n]){1,90}/g).join('\n');
+//   console.log('str should be WITH line breaks', str);
+
+//   var test = data.summary.replace(/\r?\n|\r/g,'').split(/((?:\w+ ){14})/g).filter(Boolean).join("\n");
+//   console.log('can chain?', test);
+
 //   /* check out the node-module summarizer and check out the docs and the example.js
 //      thats where i got lines 62 to 72 from
 //      not sure about the quality of the info but yeah...
