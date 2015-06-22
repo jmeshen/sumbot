@@ -58,13 +58,9 @@ process.nextTick(function() {
           console.log(error);
         });
       });
-
-      stream.on('error', function(error) {
-        console.log(error);
-      });
     });
   });
-})
+
 
 var x = true;
 var reply = function(user, link, index, length) {
@@ -91,7 +87,7 @@ var reply = function(user, link, index, length) {
 
     client.post('media/upload', {media: data}, function(error, media, response){
       if (!error) {
-        
+
         var status = {
           status: '@' + user + " Here's your summary for: " + link,
           media_ids: media.media_id_string // Pass the media id string
