@@ -90,7 +90,8 @@ process.nextTick(function() {
           // console.log('sending reply with', tweet)
           if(tweet.user.screen_name !== "DaDeetzPlz"){
             console.log('//////about to fire off reply//////////');
-          reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url);
+            x ? reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url) :
+              setTimeout(function() {reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url)}, 6000);
           }
           // console.log("inside stream after user sends post", tweet)
           socket.emit('newTweets', tweet);
@@ -106,21 +107,25 @@ process.nextTick(function() {
   });
 })
 
+var x = true;
 var reply = function(user, link, index, length) {
   var text = '';
-  getPage(link).then(function (summary) {
+    x = false; 
+    console.log('first run')
+    getPage(link).then(function (summary) {
     console.log('////////////receiving summary///////////', summary.summary);
     text = summary;
     gm('./server/app/routes/twitter/img/template.png')
     .gravity('Center')
     .drawText(0, 0, text.summary)
     .write("./server/app/routes/twitter/img/summary.png", function (err) {
-      if (!err) console.log('/////////////done creating summary image////////');
+      if (!err) {
+      console.log('/////////////done creating summary image////////');
+    }
       else console.log(err);
     });
-  }, console.log).then(function() {
-    setTimeout(function(){
 
+    setTimeout(function(){
     console.log('assigning new image to data');
   fs.readFileAsync('./server/app/routes/twitter/img/summary.png').then(function(data) {
 
@@ -144,21 +149,77 @@ var reply = function(user, link, index, length) {
           if(!err){
           // console.log("where is this going? ", data)
           console.log('/////////in client.post(statuses/update)///////////////');
+          x = true;
           }
        });
       }
     });
   })
     }, 5000)
+  }, console.log);
+};
 
-  });
+
+  // getPage(link).then(function (summary) {
+  //   console.log('////////////receiving summary///////////', summary.summary);
+  //   text = summary;
+  //   gm('./server/app/routes/twitter/img/template.png')
+  //   .gravity('Center')
+  //   .drawText(0, 0, text.summary)
+  //   .write("./server/app/routes/twitter/img/summary.png", function (err) {
+  //     if (!err) {
+  //       x = false; 
+  //     console.log('/////////////done creating summary image////////');
+  //   }
+  //     else console.log(err);
+  //   });
+
+  //   setTimeout(function(){
+  //   console.log('assigning new image to data');
+  // fs.readFileAsync('./server/app/routes/twitter/img/summary.png').then(function(data) {
+
+  //   console.log('what is data from fs.readfile', data);
+  //   console.log('//////////////MADE IT TO media upload////////////');
+  //   // Make post request on media endpoint. Pass file data as media parameter
+  //   client.post('media/upload', {media: data}, function(error, media, response){
+  //     // console.log('this is from the media/upload', media)
+  //     console.log('/////////in client.post(media/upload)///////////////');
+  //     if (!error) {
+
+  //       // If successful, a media object will be returned.
+  //       console.log("this is the media object", user);
+  //       // Lets tweet it
+  //       var status = {
+  //         status: '@' + user + " Here's your summary for: " + link,
+  //         media_ids: media.media_id_string // Pass the media id string
+  //       }
+
+  //       client.post('statuses/update', status, function(err, data, response) {
+  //         if(!err){
+  //         // console.log("where is this going? ", data)
+  //         console.log('/////////in client.post(statuses/update)///////////////');
+  //         x = true;
+  //         }
+  //      });
+  //     }
+  //   });
+  // })
+  //   }, 5000)
+  // }, console.log)};
+
+// .then(function(x) {
+
+//     console.log("@blah", x)
+
+
+  // });
 
 
   // client.post('statuses/update', { status: '@' + user + " this yo link: " + link}, function(err, data, response) {
   //   // console.log("where is this going? ", data)
   //   // response.send(data);
   // });
-};
+
 
 
 
