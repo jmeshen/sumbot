@@ -22,7 +22,7 @@ module.exports = router;
 router.get('/tweets', function(req, res, next) {
 
   // template creation
-  // gm(500, 400, "#ececec")
+  // gm(600, 400, "#ececec")
   // .gravity('NorthWest')
   // // .drawText(0, 0, text)
   // .write("./server/app/routes/twitter/img/template.png", function (err) {
@@ -80,7 +80,7 @@ router.get('/tweets', function(req, res, next) {
 process.nextTick(function() {
   var io = require('../../../io')();
   io.on('connection', function (socket) {
-      console.log('inside io')
+      // console.log('inside io')
       //this stream triggers when there are new statuses
       client.stream('statuses/filter', {track: "DaDeetzPlz", with: "user"}, function(stream) {
         console.log('We are listening E.T.:')
@@ -111,37 +111,38 @@ var x = true;
 var reply = function(user, link, index, length) {
   var text = '';
     x = false;
-    console.log('first run')
+    // console.log('first run')
     getPage(link).then(function (summary) {
-    console.log('////////////receiving summary///////////', summary.summary);
+    // console.log('////////////receiving summary///////////', summary.summary);
     var str = summary.summary.replace(/\r?\n|\r/g,'');
     str = str.match(/(.|[\n]){1,57}/g).join('\n');
     text = str;
     gm('./server/app/routes/twitter/img/template.png')
     .gravity('NorthWest')
-    .fontSize(16)
-    .drawText(40, 100, text)
+    .font('Helvetica.ttf', 16)
+    // .fontSize(16)
+    .drawText(80, 140, text)
     .write("./server/app/routes/twitter/img/summary.png", function (err) {
       if (!err) {
-      console.log('/////////////done creating summary image////////');
+      // console.log('/////////////done creating summary image////////');
     }
       else console.log(err);
     });
 
     setTimeout(function(){
-    console.log('assigning new image to data');
+    // console.log('assigning new image to data');
   fs.readFileAsync('./server/app/routes/twitter/img/summary.png').then(function(data) {
 
-    console.log('what is data from fs.readfile', data);
-    console.log('//////////////MADE IT TO media upload////////////');
+    // console.log('what is data from fs.readfile', data);
+    // console.log('//////////////MADE IT TO media upload////////////');
     // Make post request on media endpoint. Pass file data as media parameter
     client.post('media/upload', {media: data}, function(error, media, response){
       // console.log('this is from the media/upload', media)
-      console.log('/////////in client.post(media/upload)///////////////');
+      // console.log('/////////in client.post(media/upload)///////////////');
       if (!error) {
 
         // If successful, a media object will be returned.
-        console.log("this is the media object", user);
+        // console.log("this is the media object", user);
         // Lets tweet it
         var status = {
           status: '@' + user + " Here's your summary for: " + link,
@@ -151,13 +152,14 @@ var reply = function(user, link, index, length) {
         client.post('statuses/update', status, function(err, data, response) {
           if(!err){
           // console.log("where is this going? ", data)
-          console.log('/////////in client.post(statuses/update)///////////////');
+          // console.log('/////////in client.post(statuses/update)///////////////');
           x = true;
           }
        });
       }
     });
   })
+    console.log('reply done')
     }, 5000)
   }, console.log);
 };
