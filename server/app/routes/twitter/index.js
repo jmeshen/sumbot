@@ -33,15 +33,30 @@ client.get('statuses/user_timeline', params, function(error, tweets, response){
 process.nextTick(function() {
   var io = require('../../../io')();
   io.on('connection', function (socket) {
-    console.log('inside io')
-    client.stream('statuses/filter', {track: "DaDeetzPlz", with: "user"}, function(stream) {
-      console.log('We are listening E.T.:')
-      stream.on('data', function(tweet) {
-        if(tweet.user.screen_name !== "DaDeetzPlz"){
-          x ? reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url) :
-            setTimeout(function() {reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url)}, 6000);
-        }
-        socket.emit('newTweets', tweet);
+      console.log('inside io')
+      //this stream triggers when there are new statuses
+      client.stream('statuses/filter', {track: "DaDeetzPlz", with: "user"}, function(stream) {
+        console.log('We are listening E.T.:')
+        stream.on('data', function(tweet) {
+            // console.log('this is the username', tweet.user.screen_name)
+            // console.log('this is the url', tweet.entities.urls[0].expanded_url)
+          // console.log('sending reply with', tweet)
+          if(tweet.user.screen_name !== "DaDeetzPlz"){
+            console.log('//////about to fire off reply//////////');
+            x ? reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url) :
+              setTimeout(function() {reply(tweet.user.screen_name, tweet.entities.urls[0].expanded_url)}, 6000);
+          }
+          // console.log("inside stream after user sends post", tweet)
+          if(tweet.user.screen_name === "DaDeetzPlz") {
+            socket.emit('newTweets', tweet);
+          }
+          // socket.emit('newTweets', tweet);
+          // pristine = 0;
+        });
+
+        stream.on('error', function(error) {
+          console.log(error);
+        });
       });
 
       stream.on('error', function(error) {
@@ -56,19 +71,20 @@ var reply = function(user, link, index, length) {
   var text = '';
     x = false;
     getPage(link).then(function (summary) {
-      var str = summary.summary.replace(/\r?\n|\r/g,'');
-      str = str.match(/(.|[\n]){1,57}/g).join('\n');
-      text = str;
-        gm('./server/app/routes/twitter/img/template.png')
-          .gravity('NorthWest')
-          .fontSize(16)
-          .drawText(40, 100, text)
-          .write("./server/app/routes/twitter/img/summary.png", function (err) {
-            if (!err) {
-            console.log('/////////////done creating summary image////////');
-            }
-            else console.log(err);
-          });
+    console.log('////////////receiving summary///////////', summary.summary);
+    var str = summary.summary.replace(/\r?\n|\r/g,'');
+    str = str.match(/(.|[\n]){1,72}/g).join('\n');
+    text = str;
+    gm('./server/app/routes/twitter/img/tweet-template.png')
+    .gravity('NorthWest')
+    .fontSize(16)
+    .drawText(40, 130, text)
+    .write("./server/app/routes/twitter/img/summary.png", function (err) {
+      if (!err) {
+      console.log('/////////////done creating summary image////////');
+    }
+      else console.log(err);
+    });
 
     setTimeout(function(){
     fs.readFileAsync('./server/app/routes/twitter/img/summary.png').then(function(data) {
@@ -89,6 +105,7 @@ var reply = function(user, link, index, length) {
       }
     });
   })
+
     }, 5000)
   }, console.log);
 };

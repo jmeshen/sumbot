@@ -7,10 +7,12 @@ app.config(function ($stateProvider) {
 })
 
 app.controller('TwitterCtrl', function ($scope, TwitterFactory, Socket) {
-   
+
+
     TwitterFactory.getTweeter().then(function(results){
-      console.log('results from oembed?? ', results)
+      // console.log('results from oembed?? ', results)
       $scope.tweets = results;
+      console.log($scope.tweets)
       });
 
     Socket.on('newTweets', function(data) {
