@@ -7,6 +7,7 @@ navbar {
     padding-top: 10px;
     margin-right: 20px;
     width: 30px;
+    display: inline-block;
   }
 
   a {
@@ -47,4 +48,25 @@ navbar {
     }
   }
 
+}
+
+.navbar-fixed-top {
+  background-color: #3B94D9;
+}
+
+@keyframes walking {
+  0%, 100% {
+    transform: translateX(0px)
+  }
+  50% {
+    transform: translateX(225px);  
+  }
+  100% {
+    transform: translateX(450px);
+  }
+}
+
+.domo {
+  animation: 
+    walking 5s linear infinite alternate;
 }
