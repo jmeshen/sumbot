@@ -69,7 +69,8 @@ var reply = function(user, link, index, length) {
     getPage(link).then(function (summary) {
     console.log('////////////receiving summary///////////', summary.summary);
     var str = summary.summary.replace(/\r?\n|\r/g,'');
-    str = str.match(/(.|[\n]){1,72}/g).join('\n');
+    str = splitWords(str, 71);
+    str = str.join('\n');
     text = str;
     gm('./server/app/routes/twitter/img/tweet-template.png')
     .gravity('NorthWest')
@@ -105,3 +106,30 @@ var reply = function(user, link, index, length) {
     }, 5000)
   }, console.log);
 };
+
+function splitWords(str, num){
+    // Split by spaces
+    return str.split(/\s+/)
+
+    // Then join words so that each string section is less than num
+    .reduce(function(prev, curr) {
+        if (prev.length && (prev[prev.length - 1] + ' ' + curr).length <= num) {
+            prev[prev.length - 1] += ' ' + curr;
+        }
+        else {
+            prev.push(curr);
+        }
+        return prev;
+    }, [])
+    // console.log('hello from splitWords', str);
+
+}
+// console.log(splitWords('oogidy boogidy console soemthing asdklfj', 4));
+
+// var link = "http://www.theverge.com/2015/6/22/8824271/to-apple-love-taylor-swift-letter-generator";
+// getPage(link).then(function (summary) {
+//   console.log('getting summary', summary);
+//   var str = splitWords(summary.summary, 72);
+//   str = str.join('\n');
+//   console.log('splitWords called on summary: ', str)
+// }, function(err) { console.log(err) })
