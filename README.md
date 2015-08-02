@@ -1,6 +1,10 @@
-# sumbot
+# Twitter Summary Bot
 
-Idea: Build a twitter bot when tweeted @ with a link, tweets back an image of a summary of the link.
+### What the bot does
+When the bot is tweeted at (@) with a link to an article, the bot then sends a request to our app to summarize the article, create an image with the text from the summary, and then sends a tweet reply to the Twitter user.
 
+### Technologies used
+AngularJS, Node.js, Express.js, Twitter API, Summarizer, GraphicsMagick, Socket.io, and Material Design.
 
-Make sure to brew install imagemagick, brew install graphicsmagick, brew install ghostscript, and npm install after you pull from master
+### If forking
+Make sure to ```brew install imagemagick```, ```brew install graphicsmagick```, ```brew install ghostscript```, and ```npm install```
